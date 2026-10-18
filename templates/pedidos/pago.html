@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load delipack %}
+{% block titulo %}Pago{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina">
+  <div class="pagina__cabeza">
+    <h1>Tu pedido</h1>
+    <p>Revisa lo que guardaste, elige el día de entrega y la forma de pago.</p>
+  </div>
+
+  {% if not lineas %}
+    <div class="vacio">
+      <p>Tu carrito está vacío.</p>
+      <a class="boton" href="{% url 'catalogo:categoria' 'platos-fuertes' %}">Ver platos fuertes</a>
+    </div>
+  {% else %}
+  <div class="pago">
+    <div>
+      <h2>Carrito guardado</h2>
+      <ul class="lineas">
+        {% for l in lineas %}
+        <li class="linea">
+          <img src="{{ l.producto.imagen_chica.url }}" width="76" height="57" alt="">
+          <div>
+            <h3>{{ l.producto.nombre }}</h3>
+            <span class="tenue chico">{{ l.producto.precio|dinero }} c/u, {{ l.producto.categoria.nombre|lower }}</span>
+            <div class="linea__acciones">
+              <form method="post" action="{% url 'pedidos:actualizar' %}" data-auto>
+                {% csrf_token %}<input type="hidden" name="producto" value="{{ l.producto.pk }}">
+                <label class="sr-only" for="c{{ l.producto.pk }}">Cantidad</label>
+                <input id="c{{ l.producto.pk }}" type="number" name="cantidad" value="{{ l.cantidad }}" min="0" max="{{ l.producto.stock }}">
+                <noscript><button class="enlace chico" type="submit">Actualizar</button></noscript>
+              </form>
+              <form method="post" action="{% url 'pedidos:actualizar' %}">
+                {% csrf_token %}<input type="hidden" name="producto" value="{{ l.producto.pk }}">
+                <button class="enlace chico" type="submit" name="accion" value="quitar">Quitar</button>
+              </form>
+            </div>
+          </div>
+          <span class="importe">{{ l.subtotal|dinero }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% if not user.is_authenticated %}
+        <div class="tarjeta-form">
+          <h2>Para pagar, entra a tu cuenta</h2>
+          <p class="tenue">Tu carrito se guarda y pasa a tu cuenta al ingresar. Si eres nuevo, recibes descuento en tu primer pedido.</p>
+          <a class="boton" href="{% url 'cuentas:registro' %}?next={{ request.path }}">Crear cuenta</a>
+          <a class="boton boton--linea" href="{% url 'cuentas:ingresar' %}?next={{ request.path }}">Ingresar</a>
+        </div>
+      {% elif not user.email_verificado %}
+        <div class="tarjeta-form">
+          <h2>Confirma tu correo para pagar</h2>
+          <p class="tenue">Te enviamos un enlace a <strong>{{ user.email }}</strong>. Ábrelo y vuelve a esta página; tu carrito seguirá aquí.</p>
+          <form method="post" action="{% url 'cuentas:reenviar_verificacion' %}">{% csrf_token %}<button class="boton boton--linea" type="submit">Reenviar el enlace</button></form>
+        </div>
+      {% else %}
+      <form method="post" id="form-pago" class="tarjeta-form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<p class="aviso aviso--error">{{ form.non_field_errors|first }}</p>{% endif %}
+        <h2>Entrega</h2>
+        {% include "parciales/radios.html" with campo=form.tipo_entrega fila=True %}
+        <div data-si-entrega>
+          {% include "parciales/campo.html" with campo=form.direccion %}
+          {% include "parciales/campo.html" with campo=form.referencia %}
+        </div>
+        <div class="campos-2">
+          {% include "parciales/campo.html" with campo=form.fecha_entrega %}
+          {% include "parciales/campo.html" with campo=form.telefono %}
+        </div>
+        {% include "parciales/radios.html" with campo=form.franja fila=True %}
+        <h2>Pago</h2>
+        {% include "parciales/radios.html" with campo=form.metodo_pago %}
+        <div data-si-transferencia>
+          <p class="nota">Transfiere el total a: {{ config.datos_transferencia }}. Puedes escribir el número de comprobante ahora o enviarlo después por WhatsApp.</p>
+          {% include "parciales/campo.html" with campo=form.referencia_pago %}
+        </div>
+        {% include "parciales/campo.html" with campo=form.notas %}
+        <button class="boton boton--bloque" type="submit">Confirmar pedido por {{ totales.total|dinero }}</button>
+        <p class="tenue chico separador">No guardamos datos de tarjetas: el pago se hace al recibir o por transferencia.</p>
+      </form>
+      {% endif %}
+    </div>
+
+    <aside class="resumen" aria-labelledby="t-resumen">
+      <h2 id="t-resumen">Resumen</h2>
+      {% if totales.porcentaje %}<p class="nota nota--verde">Se aplicó tu {{ totales.porcentaje }}% de bienvenida.</p>
+      {% elif totales.descuento_motivo %}<p class="nota">{{ totales.descuento_motivo }}</p>{% endif %}
+      <dl>
+        <div class="fila"><dt>Subtotal</dt><dd>{{ totales.subtotal|dinero }}</dd></div>
+        {% if totales.descuento %}<div class="fila fila--desc"><dt>Bienvenida −{{ totales.porcentaje }}%</dt><dd>−{{ totales.descuento|dinero }}</dd></div>{% endif %}
+        <div class="fila"><dt>Entrega</dt><dd>{% if totales.envio %}{{ totales.envio|dinero }}{% else %}Gratis{% endif %}</dd></div>
+        <div class="fila fila--total"><dt>Total</dt><dd>{{ totales.total|dinero }}</dd></div>
+      </dl>
+      <p class="tenue chico">Entregas de lunes a viernes en la zona urbana de Tulcán. Cocinamos hasta {{ config.capacidad_diaria }} comidas por día.</p>
+    </aside>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

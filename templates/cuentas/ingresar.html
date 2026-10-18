@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titulo %}Ingresar{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta">
+  <div class="pagina__cabeza"><h1>Ingresar</h1><p>Entra para pagar, ver tus pedidos y usar tu carrito guardado.</p></div>
+  <form method="post" class="tarjeta-form" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    {% if form.non_field_errors %}<p class="aviso aviso--error">{{ form.non_field_errors|first }}</p>{% endif %}
+    {% include "parciales/campo.html" with campo=form.email %}
+    {% include "parciales/campo.html" with campo=form.password %}
+    <button class="boton boton--bloque" type="submit">Ingresar</button>
+    <p class="separador"><a href="{% url 'cuentas:recuperar' %}">Olvidé mi contraseña</a></p>
+    <p class="separador">¿Primera vez? <a href="{% url 'cuentas:registro' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Crea tu cuenta</a></p>
+  </form>
+</div>
+{% endblock %}

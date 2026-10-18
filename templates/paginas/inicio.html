@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block titulo %}Comidas preparadas y mise en place{% endblock %}
+{% block precarga %}<link rel="preload" as="image" href="{% static 'img/inicio/inicio-empaques-480.webp' %}" imagesrcset="{% static 'img/inicio/inicio-empaques-480.webp' %} 480w, {% static 'img/inicio/inicio-empaques-960.webp' %} 600w" imagesizes="(max-width: 860px) 100vw, 33vw" fetchpriority="high">{% endblock %}
+{% block contenido %}
+<section class="portada">
+  <div class="contenedor">
+    <p class="ciudad">Desde Tulcán, para tu semana</p>
+    <h1>Empacar sabor y entregar felicidad</h1>
+    <p class="portada__bajada">Platos fuertes listos para calentar, porciones de mise en place y combos, empacados al vacío con su información nutricional. Pides hoy, lo recibes mañana en tu oficina o en tu casa.</p>
+    <div class="portada__acciones">
+      <a class="boton" href="{% url 'catalogo:categoria' 'platos-fuertes' %}">Ver platos fuertes</a>
+      <a class="boton boton--linea" href="#como-nacio">Cómo nació DeliPack</a>
+    </div>
+    <div class="portada__fotos">
+      <img src="{% static 'img/inicio/inicio-empaques-480.webp' %}" srcset="{% static 'img/inicio/inicio-empaques-480.webp' %} 480w, {% static 'img/inicio/inicio-empaques-960.webp' %} 600w" sizes="(max-width: 860px) 100vw, 33vw" width="480" height="320" fetchpriority="high" alt="Porciones de carnes y vegetales empacadas al vacío">
+      <img src="{% static 'img/inicio/plato-03-480.webp' %}" srcset="{% static 'img/inicio/plato-03-480.webp' %} 480w, {% static 'img/inicio/plato-03-960.webp' %} 730w" sizes="(max-width: 860px) 50vw, 33vw" width="480" height="343" alt="Salmón con quinua y espárragos listo para calentar">
+      <img src="{% static 'img/inicio/porcion-4-480.webp' %}" sizes="(max-width: 860px) 50vw, 33vw" width="480" height="480" alt="Bolsa de vegetales mixtos cortados para cocinar">
+    </div>
+  </div>
+</section>
+
+<section class="bloque" id="como-nacio" aria-labelledby="t-historia">
+  <div class="contenedor historia">
+    <div class="historia__texto">
+      <h2 id="t-historia">Cómo nació</h2>
+      <p>En Tulcán muchas personas trabajan en oficinas con jornadas largas. A la hora del almuerzo, o al llegar a casa por la noche, no queda tiempo para cocinar y la salida suele ser comida rápida o poco equilibrada.</p>
+      <p>DeliPack nació para resolver eso. Empezamos preparando almuerzos para compañeros de trabajo, empacados al vacío para que se conserven bien y con una etiqueta que dice exactamente qué contienen. Pronto llegaron los pedidos para la cena y las familias que querían adelantar la cocina de la semana.</p>
+      <p>Hoy preparamos hasta 30 comidas al día con ingredientes de Supermaxi y de los mercados San Miguel y Central, en empaques biodegradables, y las entregamos de lunes a viernes en la zona urbana de la ciudad.</p>
+    </div>
+    <div class="historia__fotos">
+      <img src="{% static 'img/inicio/inicio-proteinas-960.webp' %}" srcset="{% static 'img/inicio/inicio-proteinas-480.webp' %} 480w, {% static 'img/inicio/inicio-proteinas-960.webp' %} 678w" sizes="(max-width: 860px) 100vw, 45vw" width="678" height="452" loading="lazy" decoding="async" alt="Salmón, carne y vegetales en bolsas selladas al vacío">
+      <img src="{% static 'img/inicio/inicio-ingredientes-480.webp' %}" width="480" height="349" loading="lazy" decoding="async" alt="Ingredientes de mise en place en recipientes: pollo, especias y vegetales picados">
+      <img src="{% static 'img/inicio/inicio-mise-en-place-480.webp' %}" width="480" height="353" loading="lazy" decoding="async" alt="Huevo, tomate, rábano y vegetales cortados y listos para cocinar">
+    </div>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="t-identidad">
+  <div class="contenedor">
+    <div class="bloque__cabeza">
+      <h2 id="t-identidad">Lo que nos mueve</h2>
+      <p>Una alternativa práctica y equilibrada a la comida rápida y al delivery, que crezca cuidando el ambiente.</p>
+    </div>
+    <div class="identidad">
+      <article>
+        <h3>Propósito</h3>
+        <p>Que nadie en Tulcán tenga que elegir entre comer bien y tener tiempo. Hacemos la parte larga de la cocina para que tú solo calientes y disfrutes.</p>
+      </article>
+      <article>
+        <h3>Misión</h3>
+        <p>Ofrecer productos alimenticios prácticos, de calidad y bien empacados, con un servicio confiable, responsable y cercano, y con cuidado del medio ambiente.</p>
+      </article>
+      <article>
+        <h3>Visión</h3>
+        <p>Ser una empresa reconocida en alimentos empaquetados por su calidad, practicidad, innovación y presentación, con crecimiento sostenible.</p>
+      </article>
+    </div>
+    <ul class="valores" aria-label="Valores">
+      <li>Calidad</li><li>Responsabilidad</li><li>Honestidad</li><li>Respeto</li><li>Trabajo en equipo</li><li>Innovación</li><li>Compromiso ambiental</li>
+    </ul>
+  </div>
+</section>
+
+<section class="bloque" aria-labelledby="t-pasos">
+  <div class="contenedor">
+    <div class="bloque__cabeza"><h2 id="t-pasos">Así funciona</h2></div>
+    <ol class="pasos">
+      <li><h3>Pide con un día de anticipación</h3><p>Elige tus platos y el día de entrega. Cocinamos solo lo que se pidió, así no hay desperdicio.</p></li>
+      <li><h3>Preparamos y empacamos</h3><p>Cocinamos esa misma mañana, sellamos al vacío y etiquetamos con calorías, proteínas y alérgenos.</p></li>
+      <li><h3>Entregamos donde estés</h3><p>Llevamos tu pedido a la oficina para el almuerzo o a tu casa para la cena. También puedes retirarlo.</p></li>
+    </ol>
+  </div>
+</section>
+
+{% if destacados %}
+<section class="bloque" aria-labelledby="t-destacados">
+  <div class="contenedor">
+    <div class="bloque__cabeza"><h2 id="t-destacados">Los más pedidos</h2></div>
+    <div class="grilla">
+      {% for p in destacados %}{% include "parciales/tarjeta.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="bloque" aria-labelledby="t-accesos">
+  <div class="contenedor">
+    <div class="bloque__cabeza"><h2 id="t-accesos">Elige cómo quieres comer</h2></div>
+    <div class="accesos">
+      <a class="acceso" href="{% url 'catalogo:categoria' 'platos-fuertes' %}">
+        <figure><img src="{% static 'img/inicio/plato-03-480.webp' %}" width="480" height="343" loading="lazy" decoding="async" alt="Salmón con quinua y espárragos empacado al vacío"></figure>
+        <h3>Platos fuertes</h3><p>Listos para calentar en tres minutos.</p>
+      </a>
+      <a class="acceso" href="{% url 'catalogo:categoria' 'mise-en-place' %}">
+        <figure><img src="{% static 'img/inicio/porcion-4-480.webp' %}" width="480" height="480" loading="lazy" decoding="async" alt="Bolsa de vegetales mixtos cortados"></figure>
+        <h3>Mise en place</h3><p>Verduras y frutas cortadas para que cocines en minutos.</p>
+      </a>
+      <a class="acceso" href="{% url 'catalogo:combos' %}">
+        <figure><img src="{% static 'img/inicio/combo-semana-oficina-480.webp' %}" width="480" height="640" loading="lazy" decoding="async" alt="Comidas empacadas junto a una selladora al vacío"></figure>
+        <h3>Combos y promociones</h3><p>Resuelve la semana completa y ahorra.</p>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

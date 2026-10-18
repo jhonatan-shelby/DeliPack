@@ -1,0 +1,9 @@
+Hola,
+
+Recibimos una solicitud para cambiar la contraseña de tu cuenta DeliPack ({{ email }}). Abre este enlace para elegir una nueva:
+
+{{ protocol }}://{{ domain }}{% url 'cuentas:recuperar_confirmar' uidb64=uid token=token %}
+
+Si no lo pediste, ignora este mensaje; tu contraseña no cambiará.
+
+DeliPack, Tulcán

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load delipack %}
+{% block titulo %}Pedido {{ pedido.codigo }}{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina">
+  <div class="pagina__cabeza">
+    <h1>Pedido {{ pedido.codigo }}</h1>
+    <p>Estado: <span class="estado estado--{{ pedido.estado }}">{{ pedido.get_estado_display }}</span>. Te enviamos el resumen a {{ pedido.usuario.email }}.</p>
+  </div>
+  <div class="dos-columnas">
+    <div class="tarjeta-form">
+      <h2>Entrega</h2>
+      <dl class="detalle-lista">
+        <dt>Día</dt><dd>{{ pedido.fecha_entrega|date:"l j \d\e F" }}, {{ pedido.get_franja_display|lower }}</dd>
+        <dt>Modalidad</dt><dd>{{ pedido.get_tipo_entrega_display }}</dd>
+        {% if pedido.direccion %}<dt>Dirección</dt><dd>{{ pedido.direccion }}{% if pedido.referencia %} ({{ pedido.referencia }}){% endif %}</dd>{% endif %}
+        <dt>Celular</dt><dd>{{ pedido.telefono }}</dd>
+        <dt>Pago</dt><dd>{{ pedido.get_metodo_pago_display }}{% if pedido.pagado %}, pagado{% endif %}</dd>
+      </dl>
+      {% if pedido.metodo_pago == "TRANSFERENCIA" and not pedido.pagado %}
+        <p class="nota">Transfiere {{ pedido.total|dinero }} a: {{ config.datos_transferencia }}. Indica el código {{ pedido.codigo }}.</p>
+      {% endif %}
+      {% if pedido.estado == "PENDIENTE" %}
+        <form method="post" action="{% url 'pedidos:cancelar' pedido.codigo %}">{% csrf_token %}
+          <button class="boton boton--linea boton--chico" type="submit">Cancelar pedido</button>
+        </form>
+      {% endif %}
+    </div>
+    <div>
+      <div class="tabla-envoltura">
+      <table class="tabla">
+        <thead><tr><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Subtotal</th></tr></thead>
+        <tbody>
+          {% for i in pedido.items.all %}<tr><td>{{ i.nombre }}</td><td class="num">{{ i.cantidad }}</td><td class="num">{{ i.precio_unitario|dinero }}</td><td class="num">{{ i.subtotal|dinero }}</td></tr>{% endfor %}
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3">Subtotal</td><td class="num">{{ pedido.subtotal|dinero }}</td></tr>
+          {% if pedido.descuento %}<tr><td colspan="3">Descuento de bienvenida ({{ pedido.descuento_porcentaje }}%)</td><td class="num">−{{ pedido.descuento|dinero }}</td></tr>{% endif %}
+          <tr><td colspan="3">Entrega</td><td class="num">{% if pedido.envio %}{{ pedido.envio|dinero }}{% else %}Gratis{% endif %}</td></tr>
+          <tr><th colspan="3">Total</th><th class="num">{{ pedido.total|dinero }}</th></tr>
+        </tfoot>
+      </table>
+      </div>
+      <p class="separador"><a href="{% url 'cuentas:perfil' %}">Ver todos mis pedidos</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

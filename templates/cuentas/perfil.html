@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load delipack %}
+{% block titulo %}Mi cuenta{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina">
+  <div class="pagina__cabeza">
+    <h1>Hola, {{ user.get_short_name }}</h1>
+    <p>{{ user.email }}{% if user.email_verificado %}, correo verificado{% else %}, correo sin verificar{% endif %}.
+    {% if user.tiene_descuento %} Tienes {{ user.descuento_bienvenida }}% de descuento para tu primer pedido con plato fuerte y mise en place.{% endif %}</p>
+  </div>
+  {% if not user.email_verificado %}
+    <form method="post" action="{% url 'cuentas:reenviar_verificacion' %}" class="nota">{% csrf_token %}
+      Confirma tu correo para poder pagar. <button class="enlace" type="submit">Reenviar el enlace</button>
+    </form>
+  {% endif %}
+  <div class="dos-columnas">
+    <form method="post" class="tarjeta-form" novalidate>
+      {% csrf_token %}
+      <h2>Mis datos</h2>
+      {% include "parciales/campo.html" with campo=form.nombres %}
+      {% include "parciales/campo.html" with campo=form.apellidos %}
+      {% include "parciales/campo.html" with campo=form.telefono %}
+      <button class="boton" type="submit">Guardar datos</button>
+      <p class="separador"><a href="{% url 'cuentas:recuperar' %}">Cambiar contraseña</a></p>
+    </form>
+    <section>
+      <h2>Mis pedidos</h2>
+      {% if pedidos %}
+      <div class="tabla-envoltura">
+      <table class="tabla">
+        <thead><tr><th>Código</th><th>Entrega</th><th>Estado</th><th class="num">Total</th></tr></thead>
+        <tbody>
+        {% for p in pedidos %}
+          <tr><td><a href="{% url 'pedidos:detalle' p.codigo %}">{{ p.codigo }}</a></td><td>{{ p.fecha_entrega|date:"d/m/Y" }}</td>
+          <td><span class="estado estado--{{ p.estado }}">{{ p.get_estado_display }}</span></td><td class="num">{{ p.total|dinero }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      {% else %}<p class="tenue">Aún no tienes pedidos.</p>{% endif %}
+      <form method="post" action="{% url 'cuentas:salir' %}" class="separador">{% csrf_token %}<button class="boton boton--linea" type="submit">Cerrar sesión</button></form>
+    </section>
+  </div>
+</div>
+{% endblock %}

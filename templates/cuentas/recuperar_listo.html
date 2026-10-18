@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block titulo %}Contraseña actualizada{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta"><div class="tarjeta-form">
+  <h1>Listo</h1><p class="tenue">Tu contraseña se cambió. Ya puedes ingresar.</p>
+  <a class="boton" href="{% url 'cuentas:ingresar' %}">Ingresar</a>
+</div></div>
+{% endblock %}

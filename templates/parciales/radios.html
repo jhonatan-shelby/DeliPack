@@ -1,0 +1,7 @@
+<fieldset class="campo">
+  <legend>{{ campo.label }}</legend>
+  <div class="radios{% if fila %} radios--fila{% endif %}">
+    {% for r in campo %}<label>{{ r.tag }} {{ r.choice_label }}</label>{% endfor %}
+  </div>
+  {% if campo.errors %}<p class="error">{{ campo.errors|first }}</p>{% endif %}
+</fieldset>

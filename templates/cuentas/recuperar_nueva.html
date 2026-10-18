@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titulo %}Nueva contraseña{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta">
+  {% if validlink %}
+  <div class="pagina__cabeza"><h1>Elige una nueva contraseña</h1><p>Mínimo 10 caracteres con mayúscula, minúscula, número y símbolo.</p></div>
+  <form method="post" class="tarjeta-form" novalidate>{% csrf_token %}
+    {% for e in form.new_password1.errors %}<p class="aviso aviso--error">{{ e }}</p>{% endfor %}
+    {% include "parciales/campo.html" with campo=form.new_password1 %}
+    {% include "parciales/campo.html" with campo=form.new_password2 %}
+    <button class="boton boton--bloque" type="submit">Guardar contraseña</button>
+  </form>
+  {% else %}
+  <div class="tarjeta-form"><h1>El enlace ya no sirve</h1><p class="tenue">Pide uno nuevo.</p><a class="boton" href="{% url 'cuentas:recuperar' %}">Pedir otro enlace</a></div>
+  {% endif %}
+</div>
+{% endblock %}

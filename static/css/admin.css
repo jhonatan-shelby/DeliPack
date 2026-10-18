@@ -1,0 +1,27 @@
+/* Colores de DeliPack en el panel de administración de Django */
+:root, html[data-theme="light"] {
+  --primary: #4E2E1E;
+  --secondary: #6B4430;
+  --accent: #F7931E;
+  --primary-fg: #F8F5ED;
+  --header-color: #F8F5ED;
+  --header-branding-color: #F8F5ED;
+  --header-bg: #4E2E1E;
+  --header-link-color: #F8F5ED;
+  --breadcrumbs-bg: #6B4430;
+  --breadcrumbs-link-fg: #FDE3C2;
+  --breadcrumbs-fg: #F8F5ED;
+  --link-fg: #8A4B12;
+  --link-hover-color: #4E2E1E;
+  --link-selected-fg: #4E2E1E;
+  --button-bg: #4E2E1E;
+  --button-hover-bg: #6B4430;
+  --default-button-bg: #F7931E;
+  --default-button-hover-bg: #E5820C;
+  --selected-row: #FFF4E5;
+  --message-success-bg: #EEF6E8;
+}
+#site-name a { font-family: Georgia, serif; font-weight: 700; }
+.stock-bajo { margin-bottom: 20px; }
+.stock-bajo table { width: 100%; }
+.stock-bajo h2 { background: #B54708 !important; }

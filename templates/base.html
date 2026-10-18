@@ -1,0 +1,84 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}DeliPack{% endblock %} | DeliPack Tulcán</title>
+  <meta name="description" content="{% block descripcion %}DeliPack: comidas preparadas, mise en place y combos empacados al vacío, con información nutricional. Pedidos anticipados en Tulcán.{% endblock %}">
+  <meta name="theme-color" content="#4E2E1E">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="preload" href="{% static 'fonts/libre-caslon-text-latin-700-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  {% block precarga %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'css/delipack.css' %}">
+  <script src="{% static 'js/delipack.js' %}" defer></script>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="cabecera">
+  <div class="contenedor cabecera__fila">
+    <button class="menu-boton" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <a class="marca" href="{% url 'paginas:inicio' %}" aria-label="DeliPack, inicio">
+      {% include "parciales/logo.svg" %}<span>DeliPack</span>
+    </a>
+    <div class="cabecera__acciones">
+      {% if user.is_authenticated %}
+        {% if user.is_staff %}<a class="solo-escritorio" href="/{{ admin_url }}">Administrar</a>{% endif %}
+        <a class="solo-escritorio" href="{% url 'cuentas:perfil' %}">{{ user.get_short_name }}</a>
+      {% else %}
+        <a class="solo-escritorio" href="{% url 'cuentas:ingresar' %}">Ingresar</a>
+      {% endif %}
+      <a class="icono-carrito" href="{% url 'pedidos:pago' %}" aria-label="Carrito">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2l2.2 11.2a1.5 1.5 0 0 0 1.5 1.2h8.8a1.5 1.5 0 0 0 1.5-1.2L20.5 8H6.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20" r="1.3" fill="currentColor"/><circle cx="17" cy="20" r="1.3" fill="currentColor"/></svg>
+        {% with n=carrito_cantidad %}<span class="burbuja" {% if not n %}hidden{% endif %}>{{ n }}</span>{% endwith %}
+      </a>
+    </div>
+  </div>
+  <nav class="menu" id="menu" aria-label="Principal">
+    <ul class="contenedor">
+      {% for clave, nombre, url in secciones %}
+        <li><a href="{{ url }}"{% if seccion == clave %} aria-current="page"{% endif %}>{{ nombre }}</a></li>
+      {% endfor %}
+      {% if user.is_authenticated %}
+        <li class="solo-movil"><a href="{% url 'cuentas:perfil' %}">Mi cuenta</a></li>
+      {% else %}
+        <li class="solo-movil"><a href="{% url 'cuentas:ingresar' %}">Ingresar</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</header>
+
+{% if messages %}
+<div class="contenedor mensajes" role="status">
+  {% for m in messages %}<p class="aviso aviso--{{ m.tags|default:'info' }}">{{ m }}</p>{% endfor %}
+</div>
+{% endif %}
+
+<main id="contenido">{% block contenido %}{% endblock %}</main>
+
+<footer class="pie">
+  <div class="contenedor pie__fila">
+    <div>
+      <a class="marca" href="{% url 'paginas:inicio' %}">{% include "parciales/logo.svg" %}<span>DeliPack</span></a>
+      <p class="pie__lema">{{ negocio.lema }}</p>
+    </div>
+    <ul>
+      <li>{{ negocio.ciudad }}</li>
+      <li><a href="mailto:{{ negocio.correo }}">{{ negocio.correo }}</a></li>
+      <li>{{ negocio.telefono }}</li>
+    </ul>
+    <ul>
+      <li>Pedidos con un día de anticipación</li>
+      <li>Entregas de lunes a viernes</li>
+      <li>Empaques biodegradables</li>
+    </ul>
+  </div>
+</footer>
+
+<dialog id="ventana-detalle" aria-label="Detalle del producto">
+  <div class="ventana"><button class="cerrar" type="button" aria-label="Cerrar">&times;</button><div class="ventana__contenido"></div></div>
+</dialog>
+{% if promo %}{% include "parciales/promo.html" %}{% endif %}
+</body>
+</html>

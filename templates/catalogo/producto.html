@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}{{ p.nombre }}{% endblock %}
+{% block descripcion %}{{ p.resumen }}{% endblock %}
+{% block contenido %}
+<div class="contenedor producto-pagina">
+  <p class="chico volver"><a href="{{ p.categoria.get_absolute_url }}">Volver a {{ p.categoria.nombre|lower }}</a></p>
+  {% include "catalogo/_detalle.html" %}
+</div>
+{% endblock %}

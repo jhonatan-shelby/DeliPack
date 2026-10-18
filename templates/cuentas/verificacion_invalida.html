@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Enlace no válido{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta">
+  <div class="tarjeta-form">
+    <h1>El enlace ya no sirve</h1>
+    <p class="tenue">Puede que haya vencido o que ya lo hayas usado. Ingresa a tu cuenta y pide uno nuevo desde «Mi cuenta».</p>
+    <a class="boton" href="{% url 'cuentas:ingresar' %}">Ingresar</a>
+  </div>
+</div>
+{% endblock %}

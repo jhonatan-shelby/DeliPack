@@ -1,0 +1,19 @@
+{% extends "admin/index.html" %}
+{% load delipack %}
+{% block content %}
+{% if perms.catalogo.view_producto %}
+{% productos_stock_bajo as bajos %}
+{% if bajos %}
+<div class="module stock-bajo">
+  <h2>Productos con stock bajo o agotados</h2>
+  <table>
+    <thead><tr><th>Producto</th><th>Categoría</th><th>Existencias</th><th>Aviso en</th></tr></thead>
+    <tbody>
+      {% for p in bajos %}<tr><td><a href="{% url 'admin:catalogo_producto_change' p.pk %}">{{ p.nombre }}</a></td><td>{{ p.categoria }}</td><td><strong>{{ p.stock }}</strong></td><td>{{ p.stock_minimo }}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endif %}
+{{ block.super }}
+{% endblock %}

@@ -1,0 +1,9 @@
+Hola {{ usuario.get_short_name }},
+
+Gracias por crear tu cuenta en DeliPack. Confirma tu correo abriendo este enlace:
+
+{{ enlace }}
+
+El enlace vale por 24 horas. Si no creaste esta cuenta, ignora este mensaje.
+
+DeliPack, Tulcán

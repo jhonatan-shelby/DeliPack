@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Crear cuenta{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta">
+  <div class="pagina__cabeza">
+    <h1>Crea tu cuenta</h1>
+    {% if promo %}<p>Al registrarte recibes <strong>{{ promo.porcentaje }}% de descuento</strong> en tu primer pedido con un plato fuerte y una porción de mise en place.</p>{% endif %}
+  </div>
+  <form method="post" class="tarjeta-form" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    {% if form.non_field_errors %}<p class="aviso aviso--error">{{ form.non_field_errors|first }}</p>{% endif %}
+    <div class="campos-2">
+      {% include "parciales/campo.html" with campo=form.nombres %}
+      {% include "parciales/campo.html" with campo=form.apellidos %}
+    </div>
+    {% include "parciales/campo.html" with campo=form.email ayuda="Te enviaremos un enlace para confirmarlo." %}
+    {% include "parciales/campo.html" with campo=form.telefono %}
+    <div class="campo{% if form.password1.errors %} campo--error{% endif %}">
+      <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+      {{ form.password1 }}
+      {% for e in form.password1.errors %}<p class="error">{{ e }}</p>{% endfor %}
+      <ul class="requisitos" id="requisitos" aria-label="La contraseña debe tener">
+        <li data-regla="largo">10 caracteres o más</li>
+        <li data-regla="mayus">Una mayúscula</li>
+        <li data-regla="minus">Una minúscula</li>
+        <li data-regla="numero">Un número</li>
+        <li data-regla="simbolo">Un símbolo (! # $ % *)</li>
+      </ul>
+    </div>
+    {% include "parciales/campo.html" with campo=form.password2 %}
+    <div class="campo{% if form.acepta.errors %} campo--error{% endif %}">
+      <label class="check">{{ form.acepta }} {{ form.acepta.label }}</label>
+      {% if form.acepta.errors %}<p class="error">Debes aceptar para crear la cuenta.</p>{% endif %}
+    </div>
+    <button class="boton boton--bloque" type="submit">Crear cuenta</button>
+    <p class="separador">¿Ya tienes cuenta? <a href="{% url 'cuentas:ingresar' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Ingresa</a></p>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Recuperar contraseña{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta">
+  <div class="pagina__cabeza"><h1>Recuperar contraseña</h1><p>Escribe tu correo y te enviaremos un enlace para crear una nueva.</p></div>
+  <form method="post" class="tarjeta-form" novalidate>{% csrf_token %}
+    {% include "parciales/campo.html" with campo=form.email %}
+    <button class="boton boton--bloque" type="submit">Enviar enlace</button>
+  </form>
+</div>
+{% endblock %}

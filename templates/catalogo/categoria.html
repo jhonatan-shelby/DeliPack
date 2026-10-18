@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo|default:categoria.titulo }}{% endblock %}
+{% block descripcion %}{{ presentacion|default:categoria.descripcion }}{% endblock %}
+{% block contenido %}
+<div class="contenedor">
+  <header class="catalogo-cabeza">
+    <h1>{{ titulo|default:categoria.titulo }}</h1>
+    <p>{{ presentacion|default:categoria.descripcion }}</p>
+  </header>
+
+  <div class="catalogo">
+    <div class="filtros">
+      <input type="checkbox" id="ver-filtros" class="filtros__check" {% if hay_filtros %}checked{% endif %}>
+      <label for="ver-filtros" class="filtros__toggle">Buscar y filtrar{% if num_filtros %} ({{ num_filtros }}){% endif %}</label>
+      <form method="get" id="filtros-form" class="filtros__cuerpo" role="search" aria-label="Filtrar productos">
+        <div class="buscador">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <label class="sr-only" for="q">Buscar</label>
+          <input type="search" id="q" name="q" value="{{ q }}" placeholder="Buscar por nombre o ingrediente" maxlength="60">
+        </div>
+        {% for atributo, opciones in grupos.items %}
+        <fieldset>
+          <legend>{{ atributo.nombre }}</legend>
+          {% for v in opciones %}
+          <label class="opcion"><input type="checkbox" name="{{ atributo.slug }}" value="{{ v.slug }}" {% if v.marcado %}checked{% endif %}> {{ v.nombre }} <span class="n">{{ v.total }}</span></label>
+          {% endfor %}
+        </fieldset>
+        {% endfor %}
+        <fieldset>
+          <legend>Mostrar</legend>
+          <label class="opcion"><input type="checkbox" name="disponibles" value="1" {% if disponibles %}checked{% endif %}> Solo con existencias</label>
+          <label class="sr-only" for="orden">Ordenar</label>
+          <select name="orden" id="orden">
+            <option value="" {% if not orden %}selected{% endif %}>Orden recomendado</option>
+            <option value="precio" {% if orden == "precio" %}selected{% endif %}>Precio: menor a mayor</option>
+            <option value="-precio" {% if orden == "-precio" %}selected{% endif %}>Precio: mayor a menor</option>
+            <option value="nombre" {% if orden == "nombre" %}selected{% endif %}>Nombre</option>
+          </select>
+        </fieldset>
+        <div class="filtros__acciones">
+          <button class="boton boton--chico filtros__aplicar" type="submit">Aplicar</button>
+          {% if hay_filtros %}<a href="{{ request.path }}">Quitar filtros</a>{% endif %}
+        </div>
+      </form>
+    </div>
+
+    <section aria-label="Productos">
+      <p class="resultados" aria-live="polite">
+        <span>{{ pagina.paginator.count }} producto{{ pagina.paginator.count|pluralize }}{% if q %} para «{{ q }}»{% endif %}</span>
+        <span class="solo-cursor">Pasa el cursor para ver el resumen; haz clic en la foto para ver el detalle.</span><span class="solo-tactil">Toca la foto para ver el detalle.</span>
+      </p>
+      {% if pagina.object_list %}
+        <div class="grilla">
+          {% for p in pagina.object_list %}{% include "parciales/tarjeta.html" %}{% endfor %}
+        </div>
+        {% if pagina.has_other_pages %}
+        <nav class="paginacion" aria-label="Páginas">
+          {% if pagina.has_previous %}<a class="boton boton--linea boton--chico" href="?{% if query %}{{ query }}&amp;{% endif %}pagina={{ pagina.previous_page_number }}">Anterior</a>{% endif %}
+          <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+          {% if pagina.has_next %}<a class="boton boton--linea boton--chico" href="?{% if query %}{{ query }}&amp;{% endif %}pagina={{ pagina.next_page_number }}">Siguiente</a>{% endif %}
+        </nav>
+        {% endif %}
+      {% else %}
+        <div class="vacio">
+          <p>No hay productos con esos filtros.</p>
+          <p><a href="{{ request.path }}">Ver todos</a></p>
+        </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

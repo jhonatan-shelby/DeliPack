@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block titulo %}Confirma tu correo{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina angosta">
+  <div class="tarjeta-form">
+    <h1>Revisa tu correo</h1>
+    <p class="tenue">Enviamos un enlace de confirmación a <strong>{{ user.email }}</strong>. Ábrelo para activar los pagos. El enlace vale por 24 horas; si no lo ves, revisa la carpeta de spam.</p>
+    <form method="post" action="{% url 'cuentas:reenviar_verificacion' %}">{% csrf_token %}
+      <button class="boton boton--linea" type="submit">Reenviar el enlace</button>
+      <a class="boton" href="{% url 'catalogo:categoria' 'platos-fuertes' %}">Seguir viendo platos</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

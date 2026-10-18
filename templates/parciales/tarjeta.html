@@ -1,0 +1,24 @@
+{% load delipack %}
+<article class="tarjeta">
+  <a class="tarjeta__foto" href="{{ p.get_absolute_url }}" data-detalle aria-label="Ver detalle de {{ p.nombre }}">
+    <img src="{{ p.imagen_chica.url }}" srcset="{{ p.imagen_chica.url }} 480w, {{ p.imagen_grande.url }} 960w"
+         sizes="(max-width: 860px) 48vw, 300px" width="480" height="360" alt="{{ p.nombre }}"
+         loading="{% if forloop.counter <= 4 %}eager{% else %}lazy{% endif %}" decoding="async">
+    {% if p.agotado %}<span class="sello sello--agotado">Agotado</span>{% elif p.en_oferta %}<span class="sello sello--oferta">−{{ p.ahorro_porcentaje }}%</span>{% endif %}
+    <span class="tarjeta__resumen">{{ p.resumen }}</span>
+  </a>
+  <div class="tarjeta__titulo">
+    <h2>{{ p.nombre }}</h2><span class="puntos" aria-hidden="true"></span>
+    <span class="precio">{% if p.en_oferta %}<s>{{ p.precio_anterior|dinero }}</s>{% endif %}{{ p.precio|dinero }}</span>
+  </div>
+  <div class="tarjeta__etiquetas">{% for v in p.valores.all %}{% if v.atributo.slug == "proteina" or v.atributo.slug == "carbohidrato" %}<span>{{ v.nombre }}</span>{% endif %}{% endfor %}</div>
+  <div class="tarjeta__pie">
+    {% if p.agotado %}<span class="disponible disponible--no">Sin existencias</span>
+    {% elif p.stock_bajo %}<span class="disponible disponible--bajo">Quedan {{ p.stock }}</span>
+    {% else %}<span class="disponible">Disponible</span>{% endif %}
+    <form method="post" action="{% url 'pedidos:agregar' %}" data-carrito>
+      {% csrf_token %}<input type="hidden" name="producto" value="{{ p.pk }}"><input type="hidden" name="cantidad" value="1">
+      <button class="boton boton--chico" type="submit" {% if p.agotado %}disabled{% endif %}>Agregar</button>
+    </form>
+  </div>
+</article>

@@ -1,0 +1,21 @@
+{% load static %}
+<dialog id="ventana-promo" data-modo="{% if bienvenida_ahora %}bienvenida{% elif not user.is_authenticated and seccion != 'cuenta' %}invitacion{% endif %}" aria-labelledby="promo-titulo">
+  <div class="ventana promo">
+    <button class="cerrar" type="button" aria-label="Cerrar">&times;</button>
+    <div class="promo__foto"><img src="{{ promo.imagen.url }}" alt="Plato fuerte de pollo con quinua y vegetales empacado al vacío" width="640" height="400" loading="lazy"></div>
+    <div class="promo__cuerpo">
+      <div class="promo__porcentaje">{{ promo.porcentaje }}%<small>de descuento</small></div>
+      {% if bienvenida_ahora %}
+        <h2 id="promo-titulo">Bienvenido a DeliPack, {{ user.get_short_name }}</h2>
+        <p>Tu {{ promo.porcentaje }}% ya está guardado en tu cuenta. Se aplica solo en tu primer pedido que incluya un plato fuerte y una porción de mise en place.</p>
+        {% if carrito_cantidad %}<a class="boton" href="{% url 'pedidos:pago' %}" autofocus>Continuar con mi pedido</a>{% else %}<a class="boton" href="{% url 'catalogo:categoria' 'platos-fuertes' %}" autofocus>Elegir mi plato fuerte</a>{% endif %}
+        {% if not user.email_verificado %}<p class="promo__nota">Te enviamos un enlace a {{ user.email }} para confirmar tu correo; lo necesitas para pagar.</p>{% endif %}
+      {% else %}
+        <h2 id="promo-titulo">{{ promo.titulo }}</h2>
+        <p>{{ promo.mensaje }}</p>
+        <a class="boton" href="{% url 'cuentas:registro' %}" autofocus>Crear mi cuenta</a>
+        <p class="promo__nota">¿Ya tienes cuenta? <a href="{% url 'cuentas:ingresar' %}">Ingresa aquí</a>.</p>
+      {% endif %}
+    </div>
+  </div>
+</dialog>

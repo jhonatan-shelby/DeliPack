@@ -1,0 +1,54 @@
+# DeliPack: PostgreSQL + aplicación Django + nginx
+# restart: "no" -> nada arranca solo al encender el computador ni al abrir Docker.
+# Solo corre cuando ejecutas:  docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: delipack-db
+    restart: "no"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-delipack}
+      POSTGRES_USER: ${DB_USER:-delipack}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-delipack}
+      TZ: America/Guayaquil
+    volumes:
+      - delipack-datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-delipack} -d ${DB_NAME:-delipack}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    build: .
+    container_name: delipack-web
+    restart: "no"
+    env_file: .env
+    environment:
+      DB_HOST: db
+      MEDIA_ROOT: /app/media
+    volumes:
+      - delipack-media:/app/media
+      - delipack-static:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: delipack-nginx
+    restart: "no"
+    ports:
+      - "${PUERTO:-8080}:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - delipack-media:/srv/media:ro
+      - delipack-static:/srv/staticfiles:ro
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  delipack-datos:
+  delipack-media:
+  delipack-static:

@@ -1,0 +1,19 @@
+{% load delipack %}Hola {{ pedido.usuario.get_short_name }},
+
+Recibimos tu pedido {{ pedido.codigo }}.
+
+Entrega: {{ pedido.fecha_entrega|date:"l j \d\e F" }}, {{ pedido.get_franja_display|lower }}
+Modalidad: {{ pedido.get_tipo_entrega_display }}{% if pedido.direccion %}
+Dirección: {{ pedido.direccion }}{% endif %}
+Pago: {{ pedido.get_metodo_pago_display }}
+
+{% for i in items %}- {{ i.nombre }} x {{ i.cantidad }}: {{ i.subtotal|dinero }}
+{% endfor %}
+Subtotal: {{ pedido.subtotal|dinero }}{% if pedido.descuento %}
+Descuento de bienvenida: -{{ pedido.descuento|dinero }}{% endif %}
+Total: {{ pedido.total|dinero }}
+{% if pedido.metodo_pago == "TRANSFERENCIA" %}
+Transfiere el total a: {{ config.datos_transferencia }}. Indica el código {{ pedido.codigo }}.
+{% endif %}
+Gracias por elegir DeliPack.
+Empacar sabor y entregar felicidad.

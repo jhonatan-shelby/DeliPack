@@ -1,0 +1,41 @@
+{% load delipack %}
+<div class="detalle">
+  <div class="detalle__foto">
+    <img src="{{ p.imagen_grande.url }}" width="{{ p.imagen_ancho }}" height="{{ p.imagen_alto }}" alt="{{ p.nombre }}">
+  </div>
+  <div class="detalle__info">
+    <p class="detalle__categoria">{{ p.categoria.nombre }}</p>
+    <h2>{{ p.nombre }}</h2>
+    <div class="detalle__precio">
+      <span class="precio">{% if p.en_oferta %}<s>{{ p.precio_anterior|dinero }}</s>{% endif %}{{ p.precio|dinero }}</span>
+      {% if p.agotado %}<span class="disponible disponible--no">Sin existencias</span>
+      {% elif p.stock_bajo %}<span class="disponible disponible--bajo">Quedan {{ p.stock }}</span>
+      {% else %}<span class="disponible">Disponible</span>{% endif %}
+    </div>
+    <p>{{ p.descripcion }}</p>
+    <dl class="datos">
+      {% if p.ingredientes %}<dt>Ingredientes</dt><dd>{{ p.ingredientes }}</dd>{% endif %}
+      {% if p.alergenos %}<dt>Alérgenos</dt><dd>{{ p.alergenos }}</dd>{% endif %}
+      {% if p.conservacion %}<dt>Conservación</dt><dd>{{ p.conservacion }}</dd>{% endif %}
+    </dl>
+    {% if p.calorias %}
+    <div class="nutricion" aria-label="Información nutricional">
+      <h3>Información nutricional</h3>
+      <p class="gruesa"><span>Porción{% if p.peso_g %} ({{ p.peso_g }} g){% endif %}</span><strong>1</strong></p>
+      <p><strong>Energía</strong><strong>{{ p.calorias }} kcal</strong></p>
+      {% if p.proteinas_g is not None %}<p><span>Proteínas</span><span>{{ p.proteinas_g|floatformat:"-1" }} g</span></p>{% endif %}
+      {% if p.carbohidratos_g is not None %}<p><span>Carbohidratos</span><span>{{ p.carbohidratos_g|floatformat:"-1" }} g</span></p>{% endif %}
+      {% if p.grasas_g is not None %}<p><span>Grasas</span><span>{{ p.grasas_g|floatformat:"-1" }} g</span></p>{% endif %}
+    </div>
+    {% elif p.peso_g %}<p class="tenue chico">Peso total aproximado: {{ p.peso_g }} g.</p>{% endif %}
+    <form class="agregar" method="post" action="{% url 'pedidos:agregar' %}" data-carrito>
+      {% csrf_token %}<input type="hidden" name="producto" value="{{ p.pk }}">
+      <div class="cantidad">
+        <button type="button" data-paso="-1" aria-label="Menos">−</button>
+        <input type="number" name="cantidad" value="1" min="1" max="{{ p.stock|default:1 }}" aria-label="Cantidad">
+        <button type="button" data-paso="1" aria-label="Más">+</button>
+      </div>
+      <button class="boton" type="submit" {% if p.agotado %}disabled{% endif %}>Guardar en el carrito</button>
+    </form>
+  </div>
+</div>
